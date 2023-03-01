@@ -1,7 +1,7 @@
 class Square
-    attr_reader :color, :coordenate
+    attr_reader :color, :coordinate, :piece_on_square
 
-    def initialize(color, coordenate)
+    def initialize(color, coordinate)
      
         #Error check for color input
         if color.downcase != "black" && color.downcase != "white"
@@ -9,23 +9,20 @@ class Square
         end
 
         @color = color
-        @coordenate = coordenate
-        @piece_on_square = nil
+        @coordinate = coordinate
+        @piece_on_square = []
                 
     end
 
-    #TESTING
-
     def add_piece(piece_object)
-        if @piece_on_square != nil
+        if @piece_on_square.length != 0
             raise ArgumentError.new("There can only be one piece!")
         end
 
-        self.piece = piece_object
+        @piece_on_square[0] = piece_object
 
     end
-
-    
+   
 
 
 end
