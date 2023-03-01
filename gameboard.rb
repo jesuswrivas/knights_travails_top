@@ -42,7 +42,28 @@ attr_reader :board
 
 
 
-    def generate_board_tree(square)
+    #Aux method, this returns an array of the adjacent squares for coordinate (input)
+    def adjacent_coordinates (coordinate)
+        adjacent_array = []
+        (-1..1).each do |x|
+            (-1..1).each do |y|
+                #These conditionals limit the size of the board
+                unless (coordinate[0] + x ) < 0 || coordinate[1] + y < 0 ||  (coordinate[0] + x ) > 7 || coordinate[1] + y > 7 || (x == 0 && y == 0)
+                    adjacent_array << [coordinate[0] + x, coordinate[1]+ y] 
+                end
+            end
+         end
+        return adjacent_array
+    end
+
+
+    
+    def generate_board_tree(coordinate, adjacency_hash = {coordinate => adjacent_coordinates(coordinate)})
+
+        adjacency_hash[coordinate].each do |array|
+            generate_board_tree(array, adjacency_hash[array] = adjacent_coordinates(array))
+
+        end
 
     end
 
