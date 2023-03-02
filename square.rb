@@ -1,5 +1,5 @@
 class Square
-    attr_reader :color, :coordinate, :piece_on_square
+    attr_reader :color, :coordinate, :piece_on_square, :neighbor_squares
 
     def initialize(color, coordinate)
      
@@ -11,18 +11,26 @@ class Square
         @color = color
         @coordinate = coordinate
         @piece_on_square = []
+        @neighbor_squares = []
                 
     end
 
-    def add_piece(piece_object)
+    def to_s
+        "#{self.coordinate}"
+    end
+
+    def add_piece(piece)
         if @piece_on_square.length != 0
             raise ArgumentError.new("There can only be one piece!")
         end
 
-        @piece_on_square[0] = piece_object
+        @piece_on_square[0] = piece
 
     end
-   
+    
+    def add_neighbor(square)
+        @neighbor_squares << square
+    end
 
 
 end

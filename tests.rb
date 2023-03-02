@@ -9,4 +9,4 @@ results = []
     end
 end
 
-#Para el caballo, se quieren distnacias de raiz de 2 (1.44) y raiz de 5 (2,23)
+#Para el caballo, se quieren distnacias de raiz de 5 (2,23)
