@@ -89,14 +89,11 @@ attr_reader :board
         square = self.search_square(coordinate)
         if possible_moves.include?(square)
             return adjacency_list
-
         else
             possible_moves.push(square) 
             adjacency_list[square] = []
         end
-        #posiblemente haya que checar si la key existe o no, 
-        #hay q revisar en que caso esta duplicando y si esto debe de ser asi o no
-
+       
         square.neighbor_squares.each do |array|
             unless possible_moves.include?(array)
                 adjacency_list[square] << array
@@ -104,25 +101,61 @@ attr_reader :board
         end
       
         adjacency_list[square].each do |array|
-            
             generate_adjacency_list(array.coordinate, adjacency_list, possible_moves)
         end
 
-        #tengo problemas con overrides en el hash. Ya existe la key y al llamar la fncion
-        #recursiva, se borran los datos
-        return adjacency_list
+         return adjacency_list
 
     end
 
+
+    #Find the shortest path using BFS and the adjacency_list which starts from the initial
+    #coordenate
+    def shortest_path(adja_list, start, end_square)
+        visited = [start]
+        parent = {}
+        parent[start] = nil
+        queue = [start]
+
+        until queue.length == 0
+
+            current_node = queue.shift
+
+            if current_node == end_square
+                path = []
+
+                while current_node != nil
+                    path.unshift(current_node)
+                    current_node = parent[current_node]
+                end
+                return path
+                
+            end
+
+            current_node.neighbor_squares.each do |neighbor|
+                unless visited.include?(neighbor)
+                    visited.push(neighbor) 
+                    parent[neighbor] = current_node
+                    queue.push(neighbor)
+                end
+
+            end
+        end
+
+        return nil
+
+    end
 
     
 end
 
 
 newBoard = Gameboard.new
-newPiece = Knight.new("white")
+#newPiece = Knight.new("white")
 
 #p newBoard.search_square([0,7]).neighbor_squares[0]
-varSquare = newBoard.search_square([3,3])
-varFinal = newBoard.generate_adjacency_list([3,3])
-p varFinal.keys.length
+startSquare = newBoard.search_square([0,0])
+endSquare = newBoard.search_square([7,7])
+varFinal = newBoard.generate_adjacency_list([0,0])
+
+p newBoard.shortest_path(varFinal,startSquare,endSquare)
