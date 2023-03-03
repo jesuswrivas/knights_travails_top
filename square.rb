@@ -20,7 +20,8 @@ class Square
     end
 
     def inspect
-        "#<#{self.class}:0x#{self.object_id.to_s(16)}>"
+        #"#<#{self.class}:0x#{self.object_id.to_s(16)}>"
+        "#<#{self.class}: #{self.coordinate}>"
     end
 
     def add_piece(piece)

@@ -87,8 +87,13 @@ attr_reader :board
 
     def generate_adjacency_list(coordinate, adjacency_list = {}, possible_moves = [])
         square = self.search_square(coordinate)
-        possible_moves.push(square)
-        adjacency_list[square] = []
+        if possible_moves.include?(square)
+            return adjacency_list
+
+        else
+            possible_moves.push(square) 
+            adjacency_list[square] = []
+        end
         #posiblemente haya que checar si la key existe o no, 
         #hay q revisar en que caso esta duplicando y si esto debe de ser asi o no
 
@@ -120,6 +125,4 @@ newPiece = Knight.new("white")
 #p newBoard.search_square([0,7]).neighbor_squares[0]
 varSquare = newBoard.search_square([3,3])
 varFinal = newBoard.generate_adjacency_list([3,3])
-#varFinal[newBoard.search_square([2,1])].each do |x|
- #   puts x
-#end
+p varFinal.keys.length
