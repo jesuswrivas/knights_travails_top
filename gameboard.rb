@@ -85,14 +85,41 @@ attr_reader :board
 
 
 
-    
+    def generate_adjacency_list(coordinate, adjacency_list = {}, possible_moves = [])
+        square = self.search_square(coordinate)
+        possible_moves.push(square)
+        adjacency_list[square] = []
+        #posiblemente haya que checar si la key existe o no, 
+        #hay q revisar en que caso esta duplicando y si esto debe de ser asi o no
+
+        square.neighbor_squares.each do |array|
+            unless possible_moves.include?(array)
+                adjacency_list[square] << array
+            end
+        end
+      
+        adjacency_list[square].each do |array|
+            
+            generate_adjacency_list(array.coordinate, adjacency_list, possible_moves)
+        end
+
+        #tengo problemas con overrides en el hash. Ya existe la key y al llamar la fncion
+        #recursiva, se borran los datos
+        return adjacency_list
+
+    end
 
 
     
 end
 
+
 newBoard = Gameboard.new
 newPiece = Knight.new("white")
 
 #p newBoard.search_square([0,7]).neighbor_squares[0]
-varA = newBoard.search_square([0,6])
+varSquare = newBoard.search_square([3,3])
+varFinal = newBoard.generate_adjacency_list([3,3])
+#varFinal[newBoard.search_square([2,1])].each do |x|
+ #   puts x
+#end
