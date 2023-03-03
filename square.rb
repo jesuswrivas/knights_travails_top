@@ -10,7 +10,7 @@ class Square
 
         @color = color
         @coordinate = coordinate
-        @piece_on_square = []
+        @piece_on_square = nil
         @neighbor_squares = []
                 
     end
@@ -25,11 +25,11 @@ class Square
     end
 
     def add_piece(piece)
-        if @piece_on_square.length != 0
+        if @piece_on_square != nil
             raise ArgumentError.new("There can only be one piece!")
         end
 
-        @piece_on_square[0] = piece
+        @piece_on_square = piece
 
     end
     
@@ -37,6 +37,6 @@ class Square
         @neighbor_squares << square
     end
 
-
+   
 end
 

@@ -8,7 +8,6 @@ attr_reader :board
 
     def initialize
         @board = generate
-        generate_neighbords
     end
     
     def generate
@@ -40,42 +39,27 @@ attr_reader :board
     end
 
 
-    def generate_neighbords
-       
-        #Creating the neighbors
-        (0..7).each do |x|
-            (0..7).each do |y|
-                #We need to iterate through every square in the hash and add
-                #all the neighbors
-                current_square = self.search_square([x,y])
+    def put_piece(piece,coordinate)
+        #Finding the square in the board
+        square = search_square(coordinate)
+        #Placing the piece on the square
+        square.add_piece(piece)
 
-                #Find all the neighbors of the current square,
-                coordenate_neighbors = self.adjacent_coordinates([x,y])
-                square_neighbors = coordenate_neighbors.map{|j| self.search_square(j)}
-                
-                #Add all the neighbors to the current square using the add_neighbor method
-                square_neighbors.each do |square|
-                    current_square.add_neighbor(square)
-                end
-            end
-        end 
+        #We need to generate the neighbors for square. (it changes everytime we make a move)
+        #We have an array of coordinates for the possible moves, depending on the piece on the square
+        neighbors_array = square.piece_on_square.adjacent_moves(coordinate)
+
+        #We iterate through this array, find the object on game board and 
+        #add everyone of them as a neighbor to square
+
+        neighbors_array.each do |coordinate|
+            neighbor = search_square(coordinate)
+            square.add_neighbor(neighbor)
+
+        end
 
     end
 
-
-    #Aux method, this returns an array of the adjacent squares for coordinate (input)
-    def adjacent_coordinates (coordinate)
-        adjacent_array = []
-        (-1..1).each do |x|
-            (-1..1).each do |y|
-                #These conditionals limit the size of the board
-                unless (coordinate[0] + x ) < 0 || coordinate[1] + y < 0 ||  (coordinate[0] + x ) > 7 || coordinate[1] + y > 7 || (x == 0 && y == 0)
-                    adjacent_array << [coordinate[0] + x, coordinate[1]+ y] 
-                end
-            end
-         end
-        return adjacent_array
-    end
 
     #Search a specific square, with a coordinate as an input
     #Returnds the square object
@@ -84,34 +68,28 @@ attr_reader :board
     end
 
 
+    def knight_adjacent_moves (coord)
+        adjacent_coordinates = []
+        j = 0
+        [-2, -1, 1, 2].each do |i|
+            j = 2 if i.abs == 1
+            j = 1 if i.abs == 2        
 
-    def generate_adjacency_list(coordinate, adjacency_list = {}, possible_moves = [])
-        square = self.search_square(coordinate)
-        if possible_moves.include?(square)
-            return adjacency_list
-        else
-            possible_moves.push(square) 
-            adjacency_list[square] = []
-        end
-       
-        square.neighbor_squares.each do |array|
-            unless possible_moves.include?(array)
-                adjacency_list[square] << array
+            unless coord[0] + i > 7  ||coord[0] + i < 0 || coord[1] + j > 7
+                adjacent_coordinates << [coord[0] + i ,coord[1] + j] 
+            end
+            unless coord[0] + i > 7  ||coord[0] + i < 0 || coord[1] - j < 0
+                adjacent_coordinates << [coord[0] + i ,coord[1] - j] 
             end
         end
-      
-        adjacency_list[square].each do |array|
-            generate_adjacency_list(array.coordinate, adjacency_list, possible_moves)
-        end
 
-         return adjacency_list
-
+        return adjacent_coordinates
     end
 
 
     #Find the shortest path using BFS and the adjacency_list which starts from the initial
     #coordenate
-    def shortest_path(adja_list, start, end_square)
+    def knight_shortest_path(start, end_square)
         visited = [start]
         parent = {}
         parent[start] = nil
@@ -132,7 +110,7 @@ attr_reader :board
                 
             end
 
-            current_node.neighbor_squares.each do |neighbor|
+            self.knight_adjacent_moves(current_node).each do |neighbor|
                 unless visited.include?(neighbor)
                     visited.push(neighbor) 
                     parent[neighbor] = current_node
@@ -146,16 +124,17 @@ attr_reader :board
 
     end
 
+
     
 end
 
 
 newBoard = Gameboard.new
-#newPiece = Knight.new("white")
 
-#p newBoard.search_square([0,7]).neighbor_squares[0]
-startSquare = newBoard.search_square([0,0])
-endSquare = newBoard.search_square([7,7])
-varFinal = newBoard.generate_adjacency_list([0,0])
+#We want to know the shortest path between [3,3] and [0,0]
 
-p newBoard.shortest_path(varFinal,startSquare,endSquare)
+#Creating the adjacency list starting from [3,3]
+
+p newBoard.knight_shortest_path([3,3],[0,0])
+
+
