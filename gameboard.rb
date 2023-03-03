@@ -8,6 +8,7 @@ attr_reader :board
 
     def initialize
         @board = generate
+        generate_neighbords
     end
     
     def generate
@@ -34,11 +35,8 @@ attr_reader :board
                 gameboard[x] << Square.new("white", [x,2*y])
                 gameboard[x] << Square.new("black", [x,2*y+1])
             end
-        end
-          
-      
+        end     
         return gameboard
-
     end
 
 
@@ -47,11 +45,15 @@ attr_reader :board
         #Creating the neighbors
         (0..7).each do |x|
             (0..7).each do |y|
+                #We need to iterate through every square in the hash and add
+                #all the neighbors
                 current_square = self.search_square([x,y])
 
+                #Find all the neighbors of the current square,
                 coordenate_neighbors = self.adjacent_coordinates([x,y])
                 square_neighbors = coordenate_neighbors.map{|j| self.search_square(j)}
                 
+                #Add all the neighbors to the current square using the add_neighbor method
                 square_neighbors.each do |square|
                     current_square.add_neighbor(square)
                 end
@@ -75,16 +77,22 @@ attr_reader :board
         return adjacent_array
     end
 
+    #Search a specific square, with a coordinate as an input
+    #Returnds the square object
     def search_square(coordinate)
         return self.board[coordinate[0]][coordinate[1]]
     end
+
+
+
+    
+
+
     
 end
 
 newBoard = Gameboard.new
 newPiece = Knight.new("white")
-newBoard.generate_neighbords
 
-puts newBoard.search_square([0,7]).neighbor_squares
-
-
+#p newBoard.search_square([0,7]).neighbor_squares[0]
+varA = newBoard.search_square([0,6])
